@@ -40,9 +40,7 @@ pub struct BotScore {
 
 #[derive(Debug, Clone, Copy)]
 pub struct BotConfigs {
-    pub width: usize,
-    pub depth: usize,
-    pub branch: usize,
+    pub width: usize
 }
 
 #[derive(Debug, Clone)]
@@ -108,7 +106,21 @@ impl BotState {
         Ok(())
     }
 
+
     pub fn search(&self, configs: BotConfigs) -> Result<BotResult, BotError> {
+        self.search_to_n(1, configs)
+    }
+
+    /// Search until all nodes in the beam descend from at most `n` distinct
+    /// root moves or until the queue is exhausted.
+    /// With n=1, this is just normal search to find the top move
+    /// and the added benefit of stopping early, once
+    /// there are no more alternative move candidates.
+    pub fn search_to_n(
+        &self,
+        n: usize,
+        configs: BotConfigs,
+    ) -> Result<BotResult, BotError> {
         let mut result = BotResult {
             candidates: Vec::new(),
             nodes: 0,
@@ -152,7 +164,14 @@ impl BotState {
         }
 
         result.depth = 1;
-        while result.depth < self.queue.len() - self.root.hold.is_none() as usize {
+        let max_depth = self.queue.len() - self.root.hold.is_none() as usize;
+
+        while result.depth < max_depth {
+            // Stop thinking once the beam has converged onto <= n distinct root moves.
+            if unique_root_indices(&parents) <= n {
+                break;
+            }
+
             result.nodes += think(
                 &mut parents,
                 &mut children,
@@ -253,6 +272,13 @@ fn is_queue_valid(queue: &[Piece], mut bag: Bag) -> bool {
         }
     }
     true
+}
+
+fn unique_root_indices(beam: &[Node]) -> usize {
+    let mut indices: Vec<usize> = beam.iter().map(|n| n.index).collect();
+    indices.sort_unstable();
+    indices.dedup();
+    indices.len()
 }
 
 impl Ord for BotScore {

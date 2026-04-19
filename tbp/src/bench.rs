@@ -101,8 +101,6 @@ pub fn bench() {
         nodes += bot
             .search(BotConfigs {
                 width: 250,
-                depth: 12,
-                branch: 1,
             })
             .expect("bot dead!")
             .nodes;

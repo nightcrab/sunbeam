@@ -56,8 +56,6 @@ fn main() {
 
     let configs = BotConfigs {
         width: 250,
-        depth: 12,
-        branch: 1,
     };
 
     let mut queue = random_queue(1000);
