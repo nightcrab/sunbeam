@@ -59,7 +59,7 @@ impl BotState {
         queue: Vec<Piece>,
         weights: Weights,
     ) -> Result<Self, BotError> {
-        if queue.len() < 2 || !is_queue_valid(&queue, root.bag) {
+        if queue.len() < 2 {
             return Err(BotError::InvalidQueue);
         }
 
@@ -83,10 +83,6 @@ impl BotState {
         let mut bag = self.root.bag;
         for kind in &self.queue {
             update_bag(&mut bag, *kind);
-        }
-
-        if !is_queue_valid(new_pieces, bag) {
-            return Err(BotError::InvalidQueue);
         }
 
         self.lock = self.root.make(&mv, &self.queue);
