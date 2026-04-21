@@ -109,7 +109,7 @@ impl std::fmt::Display for Board {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for y in (0..20).rev() {
             for x in 0..10 {
-                write!(f, "{}", if self.has(x, y) { '#' } else { '.' })?;
+                write!(f, "{}", if self.has(x, y) { "██" } else { "  " })?;
             }
 
             write!(f, "\n")?;

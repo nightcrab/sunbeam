@@ -59,7 +59,7 @@ impl BotState {
         queue: Vec<Piece>,
         weights: Weights,
     ) -> Result<Self, BotError> {
-        if queue.len() < 2 {
+        if queue.len() < 1 {
             return Err(BotError::InvalidQueue);
         }
 
