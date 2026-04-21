@@ -181,6 +181,13 @@ impl BotState {
 
         Ok(result)
     }
+
+    pub fn get_full_rankings(&self, configs: BotConfigs) -> Result<BotResult, BotError> {
+        self.search_to_n(0, configs).map(|mut r| {
+            r.candidates.sort_by(|a, b| b.1.cmp(&a.1));
+            r
+        })
+    }
 }
 
 pub fn best_move(result: &BotResult, incomming: i32) -> Result<Move, BotError> {
